@@ -1,4 +1,4 @@
-<%= form_with(model: order, local: true) do |form| %>
+<%= form_with(model: order, local: true) do |f| %>
   <% if order.errors.any? %>
     <div id="error_explanation">
       <h2><%= pluralize(order.errors.count, "error") %> prohibited this order from being saved:</h2>
@@ -12,16 +12,32 @@
   <% end %>
 
   <div class="field">
-    <%= form.label :table_id %>
-    <%= form.collection_select :table_id, Table.order(:name), :id, :name, include_blank: true %>
+    <%= f.label :table_id %>
+    <%= f.collection_select :table_id, Table.order(:name), :id, :name, include_blank: true %>
   </div>
 
-  <div class="field">
-    <%= form.label :total %>
-    <%= form.text_field :total %>
-  </div>
+  <%= f.fields_for :order_items do |builder| %>
+    <%= render 'order_item_fields', f: builder %>
+  <% end %>
+  <%= link_to_add_fields "Add Item", f, :order_items %>
 
   <div class="actions">
-    <%= form.submit %>
+    <%= f.submit %>
   </div>
 <% end %>
+<script type="text/javascript">
+  jQuery(function() {
+    $('form').on('click', '.remove_fields', function(event) {
+    $(this).prev('input[type=hidden]').val('1');
+    $(this).closest('fieldset').hide();
+    return event.preventDefault();
+    });
+    return $('form').on('click', '.add_fields', function(event) {
+    var regexp, time;
+    time = new Date().getTime();
+    regexp = new RegExp($(this).data('id'), 'g');
+    $(this).before($(this).data('fields').replace(regexp, time));
+    return event.preventDefault();
+    });
+  });
+</script>

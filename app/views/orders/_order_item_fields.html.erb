@@ -1,0 +1,8 @@
+<fieldset>
+  <%= f.label :menu %>
+  <%= f.collection_select :menu_id, Menu.all, :id, :name %>
+  <%= f.label :quantity %>
+  <%= f.text_field :quanity, class: 'padli' %>
+  <%= f.hidden_field :_destroy %>
+  <%= link_to "remove", '#', class: "remove_fields" %>
+</fieldset>
